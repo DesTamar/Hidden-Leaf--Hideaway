@@ -1,0 +1,4 @@
+npx sequelize model:generate --name User --attributes name:string
+ npx dotenv sequelize db:migrate
+ npx sequelize seed:generate --name <name of seed>
+ npx sequelize migration:generate --name add-sportId-to-teams 
