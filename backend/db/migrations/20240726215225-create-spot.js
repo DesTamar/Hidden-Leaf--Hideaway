@@ -54,8 +54,8 @@ module.exports = {
         type: Sequelize.FLOAT,
         allowNull: false
       },
-      previewImage: {
-        type: Sequelize.STRING,
+      spotImages: {
+        type: Sequelize.INTEGER,
         allowNull: false
       },
       createdAt: {

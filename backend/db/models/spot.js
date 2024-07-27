@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+// const {Booking,Review} = require('../models')
 module.exports = (sequelize, DataTypes) => {
   class Spot extends Model {
     /**
@@ -11,6 +12,18 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Spot.hasMany(
+        models.Booking,
+        {foreignKey: 'spotId', onDelete: 'CASCADE', hooks:true}
+      )
+      Spot.hasMany(
+        models.Review,
+        {foreignKey: 'spotId', onDelete: 'CASCADE', hooks:true}
+      )
+      Spot.hasMany(
+        models.SpotImage,
+        {foreignKey: 'spotId', onDelete: 'CASCADE', hooks:true}
+      )
     }
   }
   Spot.init({
@@ -60,8 +73,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.FLOAT,
       allowNull:false
     },
-    previewImage: {
-      type: DataTypes.STRING,
+    spotImages: {
+      type: DataTypes.ARRAY(Object),
       allowNull:false
     }
   }, {
