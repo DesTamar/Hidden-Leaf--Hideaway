@@ -12,11 +12,12 @@ module.exports = {
       ownerId: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        unique: true
+       
       },
       address: {
         type: Sequelize.STRING,
-        allowNull:false
+        allowNull:false,
+        unique:true
       },
       city: {
         type: Sequelize.STRING,
@@ -47,14 +48,6 @@ module.exports = {
         allowNull: false
       },
       price: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-      },
-      avgRating: {
-        type: Sequelize.FLOAT,
-        allowNull: false
-      },
-      spotImages: {
         type: Sequelize.INTEGER,
         allowNull: false
       },

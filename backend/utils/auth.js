@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { jwtConfig } = require('../config');
-const { User } = require('../db/models');
+const { User,Spot ,SpotImage} = require('../db/models');
 
 const { secret, expiresIn } = jwtConfig;
 
@@ -62,7 +62,8 @@ const restoreUser = (req, res, next) => {
 
 // If there is no current user, return an error
 const requireAuth = function (req, _res, next) {
-  if (req.user) return next();
+  const {user} = req
+  if (user) return next();
 
   const err = new Error('Authentication required');
   err.title = 'Authentication required';
@@ -72,4 +73,57 @@ const requireAuth = function (req, _res, next) {
 }
 
 
-module.exports = { setTokenCookie, restoreUser, requireAuth };
+const spotAuth = async (req,res,next) => {
+  const { spotId } = req.params
+  let spots = await Spot.findAll({
+    where: {
+      id: spotId
+    }
+  })
+  if (spots.length) return next()
+  const error  = new Error("Couldn't find a Spot with the specified id")
+  error.status = 404
+ return next(error)
+
+}
+
+const isOwner =  async (req, res, next) => {
+  const {user} = req
+  const { spotId } = req.params
+  const spot = await Spot.findOne({
+    where: {
+      id: spotId
+    }
+  })
+  if (user.id == spot.ownerId) return next()
+    
+  const err = new Error('You are not the owner')
+  err.title = 'Not the owner'
+  err.errors = {message: 'Not the owner'};
+  err.status = 401;
+  return next(err)
+
+}
+
+
+
+const isValid = async (req,res,next) => {
+const {spotId} = req.params
+try {
+  await SpotImage.create({
+    ...req.body,
+    spotId
+  })
+  next()
+} catch (error) {
+
+      error.status = 400;
+      error.title = "Bad request.";
+      next(error);
+  }
+  
+}
+
+
+
+module.exports = { setTokenCookie, restoreUser, requireAuth, spotAuth, isOwner,isValid};

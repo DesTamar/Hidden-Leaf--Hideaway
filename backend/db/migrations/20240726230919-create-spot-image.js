@@ -12,7 +12,7 @@ module.exports = {
       url: {
         type: Sequelize.STRING,
         allowNull:false,
-        unique:true
+        unique: true
       },
       preview: {
         type: Sequelize.STRING,

@@ -13,10 +13,6 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull:false
       },
-      spot: {
-        type: Sequelize.INTEGER,
-        allowNull:false
-      },
       userId: {
         type: Sequelize.INTEGER,
         allowNull:false
