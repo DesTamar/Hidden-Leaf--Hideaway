@@ -63,46 +63,79 @@ module.exports = (sequelize, DataTypes) => {
   Spot.init({
     ownerId: {
       type: DataTypes.INTEGER,
-      allowNull:false,
-      
-     
+      allowNull:false
     },
     address: {
       type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
+      allowNull: {
+        msg: "Street address is required"
+      },
+      validate: {
+        notEmpty: true
+      }
     },
     city: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: {
+        msg:  "City is required"
+      },
+      validate: {
+        notEmpty: true
+      }
     },
     state: {
       type: DataTypes.STRING,
-      allowNull:false
+      allowNull:{
+        msg: "State is required"
+      },
+      validate: {
+        notEmpty: true
+      }
     },
     country: {
       type: DataTypes.STRING,
-      allowNull:false
+      allowNull:{
+        msg: "Country is required"
+      },
+      validate: {
+        notEmpty: true
+      }
     },
     latitude: {
       type: DataTypes.FLOAT,
-      allowNull:false
+      allowNull:false,
+      validate: {
+        isFloat: true
+      }
     },
     longitude:{
       type: DataTypes.FLOAT,
-      allowNull:false
+      allowNull:false,
+      validate: {
+        isFloat: true
+      }
     },
     name: {
       type: DataTypes.STRING,
-      allowNull:false
+      allowNull:false,
+      validate: {
+        notEmpty: true,
+        len: [1,50]
+      }
     },
     description: {
       type: DataTypes.STRING,
-      allowNull:false
+      allowNull:false,
+      validate: {
+        notEmpty: true
+      }
     },
     price: {
       type: DataTypes.INTEGER,
-      allowNull:false
+      allowNull:false,
+      validate:{
+        isInt: true
+      }
     }
   }, {
     sequelize,

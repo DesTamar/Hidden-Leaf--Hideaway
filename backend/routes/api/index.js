@@ -8,10 +8,10 @@ const reviewsRouter = require('./reviews.js')
 const bookingsRouter = require('./bookings.js')
 const spotImageRouter = require('./spot-images.js')
 const reviewImageRouter = require('./review-images.js')
-const specifiedSpotRouter = require('./specified-spot.js')
+
 const specifiedBookingRouter = require('./specified-bookings.js')
-const specifiedReviewRouter = require('./specified-reviews.js')
-const specifiedImageRouter = require('./specified-images.js')
+
+
 const { restoreUser } = require("../../utils/auth.js");
 
 // Connect restoreUser middleware to the API router
@@ -23,7 +23,7 @@ router.use('/session', sessionRouter);
 // router.use('/spots',specifiedBookingRouter)
 // router.use('/spots',specifiedReviewRouter)
 // router.use('/spots',specifiedImageRouter)
-router.use('/spots',specifiedSpotRouter)
+// router.use('/spots',specifiedSpotRouter)
 router.use('/users', usersRouter);
 router.use('/spots', spotsRouter)
 router.use('/reviews', reviewsRouter)

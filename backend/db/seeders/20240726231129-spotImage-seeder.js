@@ -1,39 +1,44 @@
 'use strict';
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA; // define your schema in options object
+}
 const {SpotImage} = require('../models')
 const spotimages = [
   {
     url: 'image-11',
-    preview: 'Dark, sleek, and shadowy design',
+    preview: false,
     spotId: 1
   },
   {
     url: 'image-12',
-    preview: 'Nice etched wooden walls',
+    preview: true,
     spotId: 1
   },
   {
     url: 'image-21',
-    preview: 'Cloudy cozy design',
+    preview: true,
     spotId: 2
   },
   {
     url: 'image-22',
-    preview: 'Electrifying atmosphere',
+    preview: false,
     spotId: 2
   },
   {
     url: 'image-31',
-    preview: 'Nice mysterious atmosphere',
+    preview: false,
     spotId: 3
   },
   {
     url: 'image-32',
-    preview: 'Serpentine themed pillars and wall art',
+    preview: true,
     spotId: 3
   },
 ]
 
 /** @type {import('sequelize-cli').Migration} */
+options.tableName = 'SpotImages';
 module.exports = {
   async up (queryInterface, Sequelize) {
     /**
@@ -60,6 +65,9 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('SpotImages', null, {});
+    const Op = Sequelize.Op;
+    await queryInterface.bulkDelete(options,{
+      url: { [Op.in]: ['image-11','image-12','image-21','image-22','image-31','image-32'] }
+    }, {});
   }
 };

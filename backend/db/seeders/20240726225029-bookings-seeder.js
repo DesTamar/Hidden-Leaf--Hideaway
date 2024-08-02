@@ -1,4 +1,11 @@
 'use strict';
+
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA; // define your schema in options object
+}
+
+
 const {Booking} = require('../models')
 const bookings = [
   {
@@ -21,6 +28,7 @@ const bookings = [
   }
 ]
 /** @type {import('sequelize-cli').Migration} */
+options.tableName = 'Bookings';
 module.exports = {
   async up (queryInterface, Sequelize) {
    
@@ -39,6 +47,9 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('Bookings',null,{})
+    const Op = Sequelize.Op;
+    await queryInterface.bulkDelete(options,{
+      startDate: { [Op.in]: ['2024-08-01','2024-08-02' ,'2024-08-03'] }
+    },{})
   }
 };

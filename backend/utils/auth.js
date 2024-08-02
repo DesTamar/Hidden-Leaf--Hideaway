@@ -1,12 +1,12 @@
 const jwt = require('jsonwebtoken');
 const { jwtConfig } = require('../config');
-const { User,Spot ,SpotImage} = require('../db/models');
+const { User, Spot, SpotImage, Review } = require('../db/models');
 
 const { secret, expiresIn } = jwtConfig;
 
 
 const setTokenCookie = (res, user) => {
-  
+
   const safeUser = {
     id: user.id,
     email: user.email,
@@ -62,7 +62,7 @@ const restoreUser = (req, res, next) => {
 
 // If there is no current user, return an error
 const requireAuth = function (req, _res, next) {
-  const {user} = req
+  const { user } = req
   if (user) return next();
 
   const err = new Error('Authentication required');
@@ -73,7 +73,7 @@ const requireAuth = function (req, _res, next) {
 }
 
 
-const spotAuth = async (req,res,next) => {
+const spotAuth = async (req, res, next) => {
   const { spotId } = req.params
   let spots = await Spot.findAll({
     where: {
@@ -81,14 +81,26 @@ const spotAuth = async (req,res,next) => {
     }
   })
   if (spots.length) return next()
-  const error  = new Error("Couldn't find a Spot with the specified id")
+  const error = new Error("Couldn't find a Spot with the specified id")
   error.status = 404
- return next(error)
+  return next(error)
 
 }
+const revAuth = async (req, res, next) => {
+  const { reviewId } = req.params
+  let spots = await Review.findAll({
+    where: {
+      id: reviewId
+    }
+  })
+  if (spots.length) return next()
+  const error = new Error("Couldn't find a Review with the specified id")
+  error.status = 404
+  return next(error)
 
-const isOwner =  async (req, res, next) => {
-  const {user} = req
+}
+const isOwner = async (req, res, next) => {
+  const { user } = req
   const { spotId } = req.params
   const spot = await Spot.findOne({
     where: {
@@ -96,10 +108,27 @@ const isOwner =  async (req, res, next) => {
     }
   })
   if (user.id == spot.ownerId) return next()
-    
+
   const err = new Error('You are not the owner')
   err.title = 'Not the owner'
-  err.errors = {message: 'Not the owner'};
+  err.errors = { message: 'Not the owner' };
+  err.status = 401;
+  return next(err)
+
+}
+const isReviewOwner = async (req, res, next) => {
+  const { user } = req
+  const { reviewId } = req.params
+  const rev = await Review.findOne({
+    where: {
+      id: reviewId
+    }
+  })
+  if (user.id == rev.userId) return next()
+
+  const err = new Error('You are not the owner')
+  err.title = 'Not the owner'
+  err.errors = { message: 'Not the owner' };
   err.status = 401;
   return next(err)
 
@@ -107,23 +136,61 @@ const isOwner =  async (req, res, next) => {
 
 
 
-const isValid = async (req,res,next) => {
-const {spotId} = req.params
-try {
-  await SpotImage.create({
-    ...req.body,
-    spotId
-  })
-  next()
-} catch (error) {
-
-      error.status = 400;
-      error.title = "Bad request.";
-      next(error);
+const isValid = async (req, res, next) => {
+  const { spotId } = req.params
+  try {
+    await Spot.create({
+      ...req.body,
+      spotId
+    })
+    next()
+  } catch (error) {
+   
+    error.status = 400
+    next(error)
   }
-  
+}
+const isValidImage = async (req, res, next) => {
+  const { spotId } = req.params
+  try {
+    await SpotImage.create({
+      ...req.body,
+      spotId
+    })
+    next()
+  } catch (error) {
+   
+    error.status = 400
+    next(error)
+  }
+}
+const isValidReview = async (req, res, next) => {
+  let  { spotId } = req.params
+  if (!spotId){
+    const { reviewId } = req.params
+    
+    const edit = await Review.findOne({
+        where: {
+            id: reviewId
+        },
+        include: [{
+            model: Spot
+        }]
+    })
+     spotId = edit.Spot.id
+  }
+  try {
+    await Review.create({
+      ...req.body,
+      spotId
+    })
+    next()
+  } catch (error) {
+   
+    error.status = 400
+    next(error)
+  }
 }
 
 
-
-module.exports = { setTokenCookie, restoreUser, requireAuth, spotAuth, isOwner,isValid};
+module.exports = { setTokenCookie, restoreUser, requireAuth, spotAuth, isOwner, isValid ,isValidImage,isValidReview,isReviewOwner,revAuth};

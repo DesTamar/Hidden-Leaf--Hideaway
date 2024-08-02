@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router();
-const {Booking} = require('../../db/models')
+const {Booking,Spot} = require('../../db/models')
 const { requireAuth } = require('../../utils/auth')
 
 
@@ -10,7 +10,10 @@ router.get('/current',requireAuth, async (req,res,next) => {
     const bookings = await Booking.findOne({
         where: {
             userId: user.id
-        }
+        },
+        include: [{
+            model: Spot
+        }]
     })
     res.json(bookings)
 })
@@ -55,18 +58,6 @@ router.delete('/:bookingId', async (req,res,next) => {
 })
 
 
-const errorFunc = (err,req,res,next) => {
-    const statusCode = err.status || 500
-    let responce = {
-      message: err.message || 'something went wrong',
-      statusCode
-    }
-    
-    if (process.env.NODE_ENV === 'production') {
-      responce.stack = err.stack
-    } 
-    res.json (responce)
-  }
 
 
 module.exports = router

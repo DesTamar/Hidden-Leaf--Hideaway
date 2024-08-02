@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router();
 const { Review, ReviewImage ,User,Spot} = require('../../db/models')
-const { requireAuth, spotAuth } = require('../../utils/auth');
+const { requireAuth, spotAuth ,revAuth,isReviewOwner, isValidReview} = require('../../utils/auth');
 
 
 router.get('/current',requireAuth, async (req, res, next) => {
@@ -14,7 +14,9 @@ router.get('/current',requireAuth, async (req, res, next) => {
         include: [{
             attributes: ['id','firstName','lastName'],
             model: User
-        },{model: Spot},{model: ReviewImage}]
+        },{model: Spot},{
+            attributes: ['id','url'],
+            model: ReviewImage}]
        
     })
     res.json(reviews)
@@ -22,39 +24,59 @@ router.get('/current',requireAuth, async (req, res, next) => {
 
 
 
-router.post('/:reviewId/images', async (req, res, next) => {
-    const id = req.params.reviewId
-    const { url, preview, reviewId } = req.body
+router.post('/:reviewId/images',requireAuth,revAuth,isReviewOwner, async (req, res, next) => {
+    const {reviewId} = req.params
+    const review = await Review.findOne({
+        where:{
+            id: reviewId,
+        },
+        include: [{
+            model: ReviewImage
+        }]
+    })
+    if (review.ReviewImages.length >= 10 ){
+        const err = new Error('Cannot add more than 10 more images per resource')
+        err.status = 403
+        next(err)
+    }
+    
     const newReviewImage = await ReviewImage.create({
-        url,
-        preview,
+        ...req.body,
         reviewId
     })
-    res.json(newReviewImage)
+    res.status(201).json(newReviewImage)
 })
 
-router.put('/:reviewId', async (req, res, next) => {
+router.put('/:reviewId',requireAuth,revAuth,isReviewOwner,isValidReview, async (req, res, next) => {
     const { reviewId } = req.params
-
-    const edit = await Review.findOne({
+    const {user} = req
+    const rev = await Review.findOne({
         where: {
             id: reviewId
         }
     })
-    const { userId, spotId,review,stars} = req.body
-    const edited = await edit.update({
-        userId,
-        spotId,
-        review,
-        stars
+    const edit = await Review.findOne({
+        where: {
+            id: reviewId
+        },
+        include: [{
+            model: Spot
+        }]
     })
+    const spotId = edit.Spot.id
+    const edited = await rev.update({
+       ...req.body,
+       userId: user.id,
+       spotId
+    })
+   
     res.json(edited)
 })
 
 
 
 
-router.delete('/:reviewId',spotAuth, async (req, res, next) => {
+router.delete('/:reviewId',requireAuth,revAuth,isReviewOwner, async (req, res, next) => {
     const { reviewId } = req.params
 
     const deleted = await Review.findOne({
@@ -65,7 +87,6 @@ router.delete('/:reviewId',spotAuth, async (req, res, next) => {
    if (deleted) {
     deleted.destroy()
     res.json({
-        status: "success",
         message: `Successfully removed review ${reviewId}`,
     })
    } 

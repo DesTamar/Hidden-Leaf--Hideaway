@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull:false
     },
     preview: {
-      type: DataTypes.STRING,
+      type: DataTypes.BOOLEAN,
       allowNull:null
     },
     reviewId:{

@@ -1,5 +1,11 @@
 'use strict';
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA; 
+}
+
 /** @type {import('sequelize-cli').Migration} */
+options.tableName = "Spots"
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Spots', {
@@ -16,8 +22,7 @@ module.exports = {
       },
       address: {
         type: Sequelize.STRING,
-        allowNull:false,
-        unique:true
+        allowNull:false
       },
       city: {
         type: Sequelize.STRING,
@@ -61,9 +66,10 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP")
       }
-    });
+    }, options);
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Spots');
+    
+    return queryInterface.dropTable(options);
   }
 };

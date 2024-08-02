@@ -6,45 +6,45 @@ const { requireAuth, spotAuth, isOwner } = require('../../utils/auth')
 
 
 //get bookings of a spot given spotId
-router.get('/:spotId/bookings', requireAuth, spotAuth, async (req, res, next) => {
-    const { user } = req
-    const { spotId } = req.params
+// router.get('/:spotId/bookings', requireAuth, spotAuth, async (req, res, next) => {
+//     const { user } = req
+//     const { spotId } = req.params
 
-    if (user.id !== spot.ownerId) {
-        const booking = await Booking.findAll({
-            attributes: ['spotId', 'startDate', 'endDate'],
-            where: {
-                spotId
-            }
-        })
-        res.json(booking)
-    } else {
-        const booking = await Booking.findAll({
-            where: {
-                spotId
-            },
-            include: [{
-                attributes: ['id', 'firstName', 'lastName'],
-                model: User
-            }]
-        })
-        res.json(booking)
-    }
-})
+//     if (user.id !== spot.ownerId) {
+//         const booking = await Booking.findAll({
+//             attributes: ['spotId', 'startDate', 'endDate'],
+//             where: {
+//                 spotId
+//             }
+//         })
+//         res.json(booking)
+//     } else {
+//         const booking = await Booking.findAll({
+//             where: {
+//                 spotId
+//             },
+//             include: [{
+//                 attributes: ['id', 'firstName', 'lastName'],
+//                 model: User
+//             }]
+//         })
+//         res.json(booking)
+//     }
+// })
 
 //post booking of a spot given spotId
-router.post('/:spotId/bookings', async (req, res, next) => {
-    const id = req.params.spotId
+// router.post('/:spotId/bookings', async (req, res, next) => {
+//     const id = req.params.spotId
 
-    const { spotId, userId, startDate, endDate } = req.body
-    const newBooking = await Booking.create({
-        spotId,
-        userId,
-        startDate,
-        endDate
-    })
-    res.json(newBooking)
-})
+//     const { spotId, userId, startDate, endDate } = req.body
+//     const newBooking = await Booking.create({
+//         spotId,
+//         userId,
+//         startDate,
+//         endDate
+//     })
+//     res.json(newBooking)
+// })
 
 
 module.exports = router

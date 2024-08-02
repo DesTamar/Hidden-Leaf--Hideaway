@@ -1,4 +1,10 @@
 'use strict';
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA; // define your schema in options object
+}
+
+
 const {Review} = require('../models');
 const review = require('../models/review');
 const reviews = [
@@ -41,6 +47,7 @@ const reviews = [
 ]
 
 /** @type {import('sequelize-cli').Migration} */
+options.tableName = 'Reviews';
 module.exports = {
   async up (queryInterface, Sequelize) {
     /**
@@ -68,6 +75,9 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('Reviews', null, {});
+    const Op = Sequelize.Op;
+    await queryInterface.bulkDelete(options,{
+      review: { [Op.in]: ['Very pleasant stay','Enjoyed the mysterious feel' ,'Serene overall.','Very much enjoyed the shadowy decor.','Very unique experience, but a little creepy.','Serene and pleasantly cozy.'] }
+    }, {});
   }
 };
