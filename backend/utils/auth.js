@@ -83,7 +83,8 @@ const spotAuth = async (req, res, next) => {
   if (spots.length) return next()
   const error = new Error("Couldn't find a Spot with the specified id")
   error.status = 404
-  return next(error)
+  res.json({})
+  // return next(error)
 
 }
 const revAuth = async (req, res, next) => {

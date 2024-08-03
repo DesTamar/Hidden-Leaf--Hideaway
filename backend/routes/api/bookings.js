@@ -18,19 +18,37 @@ router.get('/current',requireAuth, async (req,res,next) => {
     res.json(bookings)
 })
 
-router.put('/:bookingId',async (req,res,next)=> {
+router.put('/:bookingId',requireAuth,async (req,res,next)=> {
     const {bookingId} = req.params
-    const {spotId,userId,startDate,endDate} = req.body
+    const {user} = req
+   
     const oldBooking = await Booking.findOne({
         where: {
             id: bookingId
         }
     })
+    const bk = await Booking.findOne({
+        where: {
+            id: bookingId
+        },
+        include:[{
+            model: Spot
+        }]
+    })
+    if (!oldBooking){
+        const err = new Error('Booking could not be found')
+        err.status = 404
+        next (err)
+    }
+    const spotId = bk.Spot.id
+    if (user.id === oldBooking.userId){
+        err = new Error('Not the owner of this booking')
+        next(err)
+    }
     const newBooking =  oldBooking.set({
-        spotId,
-        userId,
-        startDate,
-        endDate
+       ...req.body,
+       userId: user.id,
+       spotId
     })
    await newBooking.save()
     res.json(newBooking)

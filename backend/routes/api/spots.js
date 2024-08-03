@@ -47,7 +47,46 @@ router.get('/', async (req, res) => {
   res.json(ratedSpots)
 })
 
+router.get('/:spotId', async (req, res) => {
+  const {spotId} = req.params
+  
+  let spots = await Spot.findAll({
+    where: {
+      id: spotId
+    },
+    include: [{
+      attributes: ['id','url','preview'],
+      model: SpotImage 
+    },
+    {
+      model: Review,
+      attributes: ['stars']
+    },
+    {
+      model: User,
+      attributes: ['id','firstName','lastName']
+    }
+  ]
+  });
+  
+  
+  const ratedSpots = spots.map(spot => {
+    spot = spot.toJSON()
+    const sum =
+    spot.Reviews.reduce((acc, review) => (
+      acc += review.stars
+    ), 0);
+    spot.avgRating =  sum / spot.Reviews.length
+    delete spot['Reviews']
+    spot.Owner = spot.User
+    delete spot["User"]
+    return spot
+  })
 
+
+
+  res.json(ratedSpots)
+})
 
 
 
