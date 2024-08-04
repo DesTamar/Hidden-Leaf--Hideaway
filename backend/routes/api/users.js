@@ -33,22 +33,39 @@ const validateSignup = [
 router.post(
   '/',
   validateSignup,
-  async (req, res) => {
-    const { email, password, username } = req.body;
+  async (req, res,next) => {
+    const { email, password, username, firstName,lastName } = req.body;
     const hashedPassword = bcrypt.hashSync(password);
-    const user = await User.create({ email, username, hashedPassword });
+    try {
+      const user = await User.create({ 
+        email, 
+        username, 
+        hashedPassword,
+        firstName,
+        lastName });
 
-    const safeUser = {
-      id: user.id,
-      email: user.email,
-      username: user.username,
-    };
 
-    await setTokenCookie(res, safeUser);
+        const safeUser = {
+          firstName,
+          lastName,
+          id: user.id,
+          email: user.email,
+          username: user.username,
+        };
+    
+        await setTokenCookie(res, safeUser);
+    
+        return res.status(201).json({
+          user: safeUser
+        });
 
-    return res.json({
-      user: safeUser
-    });
+      
+    } catch (error) {
+      error.message = "Bad request"
+      error.status = 400
+     return next(error)
+    }
+
   }
 );
 
