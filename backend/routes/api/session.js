@@ -70,8 +70,10 @@ const router = express.Router();
         err.errors = { credential: 'The provided credentials were invalid.' };
         return next(err);
       }
-  
+     const {firstName,lastName} = user
       const safeUser = {
+        firstName,
+        lastName,
         id: user.id,
         email: user.email,
         username: user.username,
