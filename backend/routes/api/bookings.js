@@ -1,13 +1,15 @@
 const express = require('express')
 const router = express.Router();
-const {Booking,Spot} = require('../../db/models')
-const { requireAuth } = require('../../utils/auth')
+const { Booking, Spot } = require('../../db/models')
+const { requireAuth, spotAuth, validDates } = require('../../utils/auth');
+const { where } = require('sequelize');
 
 
 
-router.get('/current',requireAuth, async (req,res,next) => {
-    const {user} = req
+router.get('/current', requireAuth, async (req, res, next) => {
+    const { user } = req
     const bookings = await Booking.findOne({
+        attributes: ["userId", "startDate", "endDate", "createdAt", "updatedAt"],
         where: {
             userId: user.id
         },
@@ -18,61 +20,133 @@ router.get('/current',requireAuth, async (req,res,next) => {
     res.json(bookings)
 })
 
-router.put('/:bookingId',requireAuth,async (req,res,next)=> {
-    const {bookingId} = req.params
-    const {user} = req
-   
-    const oldBooking = await Booking.findOne({
-        where: {
-            id: bookingId
-        }
-    })
-    const bk = await Booking.findOne({
+
+
+// {
+//     "startDate": "2021-11-19",
+//     "endDate": "2021-11-20"
+//   }
+router.put('/:bookingId', requireAuth, validDates, async (req, res, next) => {
+    const { bookingId } = req.params
+    const { user } = req
+    let { startDate, endDate } = req.body
+    const booking = await Booking.findOne({
         where: {
             id: bookingId
         },
-        include:[{
+        include: [{
             model: Spot
         }]
     })
-    if (!oldBooking){
-        const err = new Error('Booking could not be found')
-        err.status = 404
-        next (err)
-    }
-    const spotId = bk.Spot.id
-    if (user.id === oldBooking.userId){
-        err = new Error('Not the owner of this booking')
-        next(err)
-    }
-    const newBooking =  oldBooking.set({
-       ...req.body,
-       userId: user.id,
-       spotId
-    })
-   await newBooking.save()
-    res.json(newBooking)
-})
-
-router.delete('/:bookingId', async (req,res,next) => {
-    const { bookingId } = req.params
-
-    const deleted = await Booking.findOne({
+    const edit = await Booking.findOne({
         where: {
             id: bookingId
         }
     })
-   if (deleted) {
-    deleted.destroy()
-    res.json({
-        status: "success",
-        message: `Successfully removed review ${bookingId}`,
+    if (!booking) {
+        const err = new Error()
+        err.message = "Couldn't find a Booking with the specified id"
+        err.status = 404
+       return next(err)
+    }
+
+    if (user.id !== booking.userId) {
+        const err = new Error()
+        err.message = "Booking must belong to current user"
+        err.status = 403
+       return next(err)
+    }
+    const currSpot = booking.Spot
+    const allBookings = await Booking.findAll({
+        include: [{
+            model: Spot,
+            where: {
+                id: currSpot.id
+            }
+        }]
     })
-   } else {
-          const err =  new Error('There is not spot with the provided bookingId')
-          err.status = 400
-          next(err)
-        }
+
+    const err = new Error()
+    err.errors = {}
+    for (const bk of allBookings) {
+        // if (booking.startDate <= bk.startDate && booking.endDate >= bk.endDate) {
+        //     err.errors.dates = "dates cannot overlap with other bookings"
+        //     err.status = 403
+        //     next(err)
+        // }
+
+        // if (booking.startDate >= bk.startDate && booking.startDate <= bk.endDate) {
+        //     err.errors.startDate = "Start date conflicts with exiting booking"
+        // }
+        // if (booking.endDate >= bk.startDate && booking.endDate <= bk.endDate) {
+        //     err.errors.endDate = "End date conflicts with existing booking"
+        // }
+        // if (Object.keys(err.errors).length) {
+        //     err.status = 403
+        //     next(err)
+        // }
+
+    }
+
+
+
+
+        const spotId = booking.Spot.id
+        const newBooking = await edit.update({
+            ...req.body,
+            userId: user.id,
+            spotId
+      })
+      res.status(200).json(newBooking)
+})
+
+router.delete('/:bookingId', requireAuth, async (req, res, next) => {
+    const { bookingId } = req.params
+    const { user } = req
+    const booking = await Booking.findOne({
+        where: {
+            id: bookingId
+        },
+        include: [{
+            model: Spot
+        }]
+    })
+
+    if (!booking) {
+        const err = new Error()
+        err.message = "Could not find booking with provided id"
+        err.status = 404
+       return next(err)
+    }
+
+    const spot = booking.Spot
+    if (booking.userId !== user.id) {
+        const err = new Error()
+        err.message = "Must be author of booking or owner of spot to cancel"
+        err.status = 403
+        return next(err)
+    } else if (spot.ownerId !== user.id){
+        const err = new Error()
+        err.message = "Must be author of booking or owner of spot to cancel"
+        err.status = 403
+       return next(err)
+    }
+    let startDate = booking.startDate
+    startDate = new Date(startDate)
+    let present = new Date()
+    if (startDate.getTime() <= present.getTime()) {
+        const err = new Error()
+        err.message = "Bookings that have been started can't be deleted"
+        err.status = 403
+       return next(err)
+    }
+
+    await booking.destroy()
+    res.json({
+        message: `Successfully removed review ${bookingId}`
+    })
+      const bookings = await Booking.findAll()
+      res.json(spot.ownerId)
 })
 
 

@@ -34,10 +34,11 @@ router.post('/:reviewId/images',requireAuth,revAuth,isReviewOwner, async (req, r
             model: ReviewImage
         }]
     })
-    if (review.ReviewImages.length >= 10 ){
+    if (review.ReviewImages.length > 10 ){
         const err = new Error('Cannot add more than 10 more images per resource')
+        err.message = "Maximum number of images for this resource was reached"
         err.status = 403
-        next(err)
+       return next(err)
     }
     
     const newReviewImage = await ReviewImage.create({

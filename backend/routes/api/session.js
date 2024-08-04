@@ -19,7 +19,7 @@ const router = express.Router();
   })
 
   router.get(
-    '/',requireAuth,
+    '/',
     (req, res) => {
       const { user } = req;
       if (user) {

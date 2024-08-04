@@ -17,7 +17,7 @@ module.exports = {
       },
       ownerId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        
        
       },
       address: {
@@ -36,11 +36,11 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      latitude: {
+      lat: {
         type: Sequelize.FLOAT,
         allowNull: false
       },
-      longitude: {
+      lng: {
         type: Sequelize.FLOAT,
         allowNull: false
       },

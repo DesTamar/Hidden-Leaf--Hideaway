@@ -28,7 +28,7 @@ router.delete('/:imageId',requireAuth, async (req, res, next) => {
     const err = new Error('You are not the owner of this spot')
     err.title = 'Not the owner'
     err.errors = { message: 'Not the owner' };
-    err.status = 401;
+    err.status = 403;
     return next(err)
 
   };
@@ -36,7 +36,7 @@ router.delete('/:imageId',requireAuth, async (req, res, next) => {
     currImaged.destroy()
     res.json({
       status: "success",
-      message: `Successfully removed review ${imageId}`,
+      message: `Successfully removed image ${imageId}`,
     })
  
 })

@@ -16,11 +16,11 @@ module.exports = {
       },
       spotId: {
         type: Sequelize.INTEGER,
-        allowNull:false
+        
       },
       userId: {
         type: Sequelize.INTEGER,
-        allowNull:false
+       
       },
       startDate: {
         type: Sequelize.STRING,

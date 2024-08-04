@@ -21,7 +21,6 @@ module.exports = {
       },
       preview: {
         type: Sequelize.BOOLEAN,
-        allowNull:false
       },
       reviewId:{
         type: Sequelize.INTEGER,
