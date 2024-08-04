@@ -151,7 +151,11 @@ router.post('/:spotId/images', requireAuth, spotAuth, isOwner, async (req, res, 
     spotId
   })
   
-  res.status(201).json(newImage)
+  res.status(201).json({
+    id: newImage.id,
+    url: newImage.url,
+    preview: newImage.preview
+  })
 
 })
 
