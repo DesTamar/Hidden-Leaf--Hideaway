@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router();
-const { Booking, Spot } = require('../../db/models')
+const { Booking, Spot,SpotImage } = require('../../db/models')
 const { requireAuth, spotAuth, validDates } = require('../../utils/auth');
 const { where } = require('sequelize');
 
@@ -8,16 +8,30 @@ const { where } = require('sequelize');
 
 router.get('/current', requireAuth, async (req, res, next) => {
     const { user } = req
-    const bookings = await Booking.findOne({
+    let booking = await Booking.findOne({
         attributes: ["userId", "startDate", "endDate", "createdAt", "updatedAt"],
         where: {
             userId: user.id
         },
         include: [{
-            model: Spot
+            model: Spot,
+            include:[
+                {
+                    model: SpotImage,
+                    attributes:['url'],
+                    where:{
+                        preview: true
+                    }
+                }
+            ]
         }]
     })
-    res.json(bookings)
+
+    booking = booking.toJSON()
+    const url = booking.Spot.SpotImages[0].url
+    booking.Spot.previewImage = url
+    delete booking.Spot.SpotImages
+    res.json(booking)
 })
 
 

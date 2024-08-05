@@ -44,7 +44,7 @@ router.get('/', async (req, res) => {
 
 
 
-  res.json(ratedSpots)
+ return res.json(ratedSpots)
 })
 
 
@@ -82,7 +82,7 @@ router.get('/current', requireAuth, async (req, res) => {
     return spot
   })
 
-  res.json(ratedSpots)
+ return res.json(ratedSpots)
 })
 
 router.get('/:spotId', spotAuth, async (req, res) => {
@@ -124,7 +124,7 @@ router.get('/:spotId', spotAuth, async (req, res) => {
 
 
 
-  res.json(ratedSpots)
+ return res.json(ratedSpots)
 })
 
 
@@ -151,7 +151,7 @@ router.post('/:spotId/images', requireAuth, spotAuth, isOwner, async (req, res, 
     spotId
   })
   
-  res.status(201).json({
+ return res.status(201).json({
     id: newImage.id,
     url: newImage.url,
     preview: newImage.preview
@@ -177,7 +177,7 @@ router.put('/:spotId', requireAuth, spotAuth, isOwner, isValid, async (req, res)
     ...req.body,
     ownerId: user.id
   })
-  res.json(edit)
+  return res.json(edit)
 
 
 
@@ -197,7 +197,7 @@ router.delete('/:spotId', requireAuth, spotAuth, isOwner, async (req, res, next)
   })
 
   await deleted.destroy()
-  res.json({
+  return res.json({
     message: `Successfully removed spot ${spotId}`,
   });
 
@@ -217,7 +217,7 @@ router.post('/:spotId/reviews', requireAuth, spotAuth,revExist, isValidReview, a
     userId: user.id
   })
 
-  res.status(201).json(newReview)
+ return res.status(201).json(newReview)
 
 })
 
@@ -237,7 +237,7 @@ router.get('/:spotId/reviews', spotAuth, async (req, res, next) => {
       model: ReviewImage
     }]
   })
-  res.json(reviews)
+ return  res.json(reviews)
 })
 
 
@@ -277,6 +277,9 @@ err.errors = {}
     if (endDate >= booking.startDate && endDate <= booking.endDate){
       err.errors.endDate = "End date conflicts with existing booking"
     }
+    if (startDate < booking.startDate && endDate > booking.endDate){
+      err.errors.dates = "Booking cannot extend before and after existing booking"
+    }
     if (Object.keys(err.errors).length){
       err.status = 403
       return next(err)
@@ -289,7 +292,7 @@ err.errors = {}
     userId: user.id,
     spotId
   })
-  res.status(201).json(newBooking)
+  return res.status(201).json(newBooking)
 })
 
 
@@ -310,7 +313,7 @@ router.get('/:spotId/bookings', requireAuth, spotAuth, async (req, res, next) =>
         spotId
       }
     })
-    res.json(booking)
+    return res.json(booking)
   } else {
     const booking = await Booking.findAll({
      
@@ -322,7 +325,7 @@ router.get('/:spotId/bookings', requireAuth, spotAuth, async (req, res, next) =>
         model: User
       }]
     })
-    res.json(booking)
+    return res.json(booking)
   }
 })
 
