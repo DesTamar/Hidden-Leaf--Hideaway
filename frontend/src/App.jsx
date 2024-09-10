@@ -1,17 +1,25 @@
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
-import LoginFormPage from "./store/components/LoginFormPage";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-// import { restoreUser } from "./store/session";
-const Layout = () => {
-  const dispatch = useDispatch()
-  useEffect(() => {
-    // dispatch(restoreUser)
-  }, [dispatch])
+import { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
+import LoginFormPage from './store/components/LoginFormPage/LoginFormPage';
+import SignupFormPage from './store/components/SignupFormPage/SignupFormPage';
+import * as sessionActions from './store/session';
 
-  return <>
-    <Outlet />
-  </>
+function Layout() {
+  const dispatch = useDispatch();
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    dispatch(sessionActions.restoreUser()).then(() => {
+      setIsLoaded(true)
+    });
+  }, [dispatch]);
+
+  return (
+    <>
+      {isLoaded && <Outlet />}
+    </>
+  );
 }
 
 const router = createBrowserRouter([
@@ -20,15 +28,20 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <h1>hi</h1>
+        element: <h1>Welcome!</h1>
       },
       {
         path: '/login',
         element: <LoginFormPage />
+      },
+      {
+        path: "/signup",
+        element: <SignupFormPage />
       }
     ]
   }
-])
+]);
+
 function App() {
   return <RouterProvider router={router} />;
 }
