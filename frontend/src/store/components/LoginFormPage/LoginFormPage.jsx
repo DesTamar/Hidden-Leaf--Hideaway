@@ -2,18 +2,17 @@ import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { login } from "../../session";
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import {Navigate } from 'react-router-dom';
 
 
 const LoginFormPage = () => {
-    const navigate = useNavigate()
     const dispatch = useDispatch()
     const currUser = useSelector(state => state.session.user) 
     const [credential, setCredential] = useState('')
     const [password, setPassword] = useState('')
     const [errors,setErrors] = useState({})
 
-    if (currUser) navigate('/')
+    if (currUser) return <Navigate to='/' replace={true}/>
 
 
     const handleSubmmit = async e => {

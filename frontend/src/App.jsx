@@ -1,23 +1,16 @@
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import LoginFormPage from "./store/components/LoginFormPage";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { restoreUser } from "./store/session";
-
-
-
+// import { restoreUser } from "./store/session";
 const Layout = () => {
   const dispatch = useDispatch()
-  const [loading, setLoading] = useState(false)
-
   useEffect(() => {
-    dispatch(restoreUser()).then(() => {
-      setLoading(true)
-    })
+    // dispatch(restoreUser)
   }, [dispatch])
 
   return <>
-    {loading && <Outlet />}
+    <Outlet />
   </>
 }
 
