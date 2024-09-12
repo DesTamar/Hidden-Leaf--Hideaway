@@ -1,46 +1,57 @@
-import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
-// import SignupFormPage from './store/components/SignupFormModal/SignupFormModal';
-import Navigation from'./store/components/Navigation/Navigation';
-import * as sessionActions from './store/session';
+import { Route,createBrowserRouter,createRoutesFromElements,RouterProvider } from 'react-router-dom'
+import HomePage from './pages/HomePage'
+import MainLayout from './layout/MainLayout'
+import LoginFormPage from './pages/LoginFormPage'
+import AllSpots from './components/AllSpots'
 
-function Layout() {
-  const dispatch = useDispatch();
-  const [isLoaded, setIsLoaded] = useState(false);
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path='/' element={<MainLayout/>}>
+      <Route index element={<HomePage/>}/>
+      <Route path='/login' element={<LoginFormPage/>}/>
+      {/* <Route path='/spots' element={<AllSpots/>}/> */}
 
-  useEffect(() => {
-    dispatch(sessionActions.restoreUser()).then(() => {
-      setIsLoaded(true)
-    });
-  }, [dispatch]);
+    </Route>
+  )
+)
 
+const App = () => {
   return (
     <>
-      <Navigation isLoaded={isLoaded} />
-      {isLoaded && <Outlet />}
+     <RouterProvider router={router}/>
+      {/* <section className="py-4">
+        <div className="container-xl lg:container m-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-lg">
+            <div className="bg-gray-100 p-6 rounded-lg shadow-md">
+              <h2 className="text-2xl font-bold">For Developers</h2>
+              <p className="mt-2 mb-4">
+                Browse our React jobs and start your career today
+              </p>
+              <a
+                href="/jobs.html"
+                className="inline-block bg-black text-white rounded-lg px-4 py-2 hover:bg-gray-700"
+              >
+                Browse Jobs
+              </a>
+            </div>
+            <div className="bg-indigo-100 p-6 rounded-lg shadow-md">
+              <h2 className="text-2xl font-bold">For Employers</h2>
+              <p className="mt-2 mb-4">
+                List your job to find the perfect developer for the role
+              </p>
+              <a
+                href="/add-job.html"
+                className="inline-block bg-indigo-500 text-white rounded-lg px-4 py-2 hover:bg-indigo-600"
+              >
+                Add Job
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>  */}
+
     </>
-  );
+  )
 }
 
-const router = createBrowserRouter([
-  {
-    element: <Layout />,
-    children: [
-      {
-        path: '/',
-        element: <h1>Welcome!</h1>
-      },
-      // {
-      //   path: "/signup",
-      //   element: <SignupFormPage />
-      // }
-    ]
-  }
-]);
-
-function App() {
-  return <RouterProvider router={router} />;
-}
-
-export default App;
+export default App
