@@ -1,0 +1,27 @@
+.landing-page{
+    padding: 20px;
+    text-align: center;
+}
+
+.spots-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.spot-tile {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 10px;
+    overflow: hidden;
+    width: 200px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.spot-tile img {
+    width: 100%;
+    height:  auto;
+}
+
+.spot-info {
+    padding: 10px;
+}
