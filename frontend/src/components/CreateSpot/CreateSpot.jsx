@@ -1,10 +1,10 @@
-import { useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { createSpot } from "../../store/spots"
+import { useEffect, useState } from "react"
+import { useDispatch } from "react-redux"
+import { createSpot, updateSpot } from "../../store/spots"
 import {useNavigate} from 'react-router-dom'
 
 
-const CreateSpot = () => {
+const CreateSpot = ({initialData, title, buttonText,spotId}) => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
@@ -22,8 +22,18 @@ const CreateSpot = () => {
         price: '',
 
     })
+
+
+
+useEffect(()=>{
+    if(initialData){
+        setFormData(initialData)
+    }
+},[initialData])
+
+
     const handleChange = (e) => {
-        const newSpot = useSelector(state => state.spot)
+       
         const { name, value } = e.target
         setFormData({
             ...formData,
@@ -32,19 +42,27 @@ const CreateSpot = () => {
     }
     const handleSubmit = async (e) => {
         e.preventDefault()
-        //dispatch post form data thunk here!!!
-       const res = await dispatch(createSpot(formData))
-       if (res){
-           console.log()
-        //    navigate(`/${newSpot[0].id}`)
+        if(spotId){
+            await dispatch(updateSpot({...formData,id: spotId}))
+            navigate(`/${spotId}`)
+        } else {
+            
+          const res =  await dispatch(createSpot(formData))
+          navigate(`/${res.dataValues.id}`)
+        } 
 
        }
   
-    }
+    
     return (
         <form onSubmit={handleSubmit}>
             <div>
-                <h1>Create a New Spot</h1>
+                {!title ? (
+                    <h1>Create a New Spot</h1>
+                ):(
+                    <h1>{title}</h1>
+                )
+            }
                 <h2>Wheres your place located?</h2>
                 <p>Guests will only get your exact address once they booked a reservation.</p>
                 <form onSubmit={handleSubmit}>
@@ -173,7 +191,14 @@ const CreateSpot = () => {
                     {/* {not done yet} */}
                 </div>
             </div>
-            <button type="submit">Create Spot</button>
+           
+            {!buttonText ? (
+                    <button type="submit">Submit</button>
+                ):(
+                    <button type="submit">{buttonText}</button>
+                )
+            }
+            
         </form>
     )
 }

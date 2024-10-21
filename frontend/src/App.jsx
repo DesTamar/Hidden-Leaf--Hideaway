@@ -6,6 +6,10 @@ import Navigation from './components/Navigation/Navigation';
 import LandingPage from './components/LandingPage/LandingPage';
 import SpotDetails from './components/Spots/SpotDetails';
 import CreateSpot from './components/CreateSpot/CreateSpot';
+import ManageSpotsFormModal from './components/ManageSpots/ManageSpotsFormModal';
+import UpdateSpot from './components/Update/UpdateSpot';
+
+
 function Layout() {
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
@@ -39,6 +43,14 @@ const router = createBrowserRouter([
       {
         path:'/create-spot',
         element:<CreateSpot/>
+      },
+      {
+        path: '/manage-spots',
+        element:<ManageSpotsFormModal/>
+      },
+      {
+        path:'/update-spot/:spotId',
+        element:<UpdateSpot/>
       }
     ]
   }

@@ -25,6 +25,7 @@ const LandingPage = () => {
           city={spot.city}
           state={spot.state}
           rating={spot.avgRating}
+          showManageButtons={false}
           />
         ))}
       </div>

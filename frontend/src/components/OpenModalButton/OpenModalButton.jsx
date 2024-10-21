@@ -4,7 +4,8 @@ const OpenModalButton = ({ modalComponent, buttonText, onButtonClick, onModalClo
 const {setModalContent,setOnModalClose} = useModal()
 
 
-const onClick = () => {
+const onClick = (e) => {
+    e.stopPropagation()
     if (onModalClose) setOnModalClose(onModalClose);
     setModalContent(modalComponent);
     if (typeof onButtonClick ==='function') onButtonClick()
