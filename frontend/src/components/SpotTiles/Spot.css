@@ -10,18 +10,40 @@
 }
 
 .spot-tile {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin: 10px;
-    overflow: hidden;
-    width: 200px;
+   display: felx;
+   flex-direction: column;
+   border: 1px solid #ddd;
+   border-radius: 10px;
+   overflow: hidden;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin: 10px;
 }
-.spot-tile img {
+.spot-img {
     width: 100%;
     height:  auto;
+    object-fit: cover;
+    margin: 10px;
+    flex-grow: 1;
 }
 
 .spot-info {
+    display: flex;
+    justify-content: space-between;
     padding: 10px;
+    background-color: whitesmoke;
 }
+
+.location {
+    text-align: left;
+}
+ .rating {
+    text-align: right;
+ }
+ .location p, .rating p {
+    margin: 1;
+ }
+ .rating p {
+    background-color: rgb(167, 213, 171);
+    border-radius: 10px;
+    padding: 5px 10px;
+ }

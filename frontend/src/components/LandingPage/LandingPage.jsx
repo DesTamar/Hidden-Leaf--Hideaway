@@ -10,6 +10,7 @@ const LandingPage = () => {
 
   
    useEffect(() => {
+    
     dispatch(getSpots())
    },[dispatch])
   return (
@@ -19,6 +20,7 @@ const LandingPage = () => {
       <div className="spots-container">
         {spots.map((spot) =>(
           <SpotTile
+          spot={spot}
           key={spot.id}
           id={spot.id}
           previewImage={spot.previewImage}
@@ -26,6 +28,7 @@ const LandingPage = () => {
           state={spot.state}
           rating={spot.avgRating}
           showManageButtons={false}
+          price={spot.price}
           />
         ))}
       </div>

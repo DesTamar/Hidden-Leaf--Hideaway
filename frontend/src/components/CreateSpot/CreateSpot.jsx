@@ -2,15 +2,14 @@ import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import { createSpot, updateSpot } from "../../store/spots"
 import {useNavigate} from 'react-router-dom'
-
+import './CreateSpot.css'
 
 const CreateSpot = ({initialData, title, buttonText,spotId}) => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const [errors, setErrors] = useState({});
 
-    const [formData, setFormData] = useState({
-        // Owner:user,
-       
+    const [formData, setFormData] = useState({   
         country: '',
         address: '',
         city: '',
@@ -42,12 +41,25 @@ useEffect(()=>{
     }
     const handleSubmit = async (e) => {
         e.preventDefault()
+        setErrors({})
         if(spotId){
             await dispatch(updateSpot({...formData,id: spotId}))
+            .catch(async (res) => {
+                const data = await res.json();
+                if (data?.errors) {
+                  setErrors(data.errors);
+                }
+              });
             navigate(`/${spotId}`)
         } else {
             
           const res =  await dispatch(createSpot(formData))
+          .catch(async (res) => {
+            const data = await res.json();
+            if (data?.errors) {
+              setErrors(data.errors);
+            }
+          });
           navigate(`/${res.dataValues.id}`)
         } 
 
@@ -55,8 +67,8 @@ useEffect(()=>{
   
     
     return (
-        <form onSubmit={handleSubmit}>
-            <div>
+        <form className="creation-form" onSubmit={handleSubmit}>
+            <div >
                 {!title ? (
                     <h1>Create a New Spot</h1>
                 ):(
@@ -66,20 +78,18 @@ useEffect(()=>{
                 <h2>Wheres your place located?</h2>
                 <p>Guests will only get your exact address once they booked a reservation.</p>
                 <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <div>
-                            <label>Country</label>
+                    <div className=''>
                             <input
                                 type='text'
                                 id='country'
                                 name='country'
+                                placeholder="Country"
                                 value={formData.country}
                                 onChange={handleChange}
                             />
-                        </div>
                     </div>
+                    {errors.country && <p>{errors.country}</p>}
                     <div className="form-group">
-                        <div>
                             <label>Street Adress</label>
                             <input
                                 type='text'
@@ -88,10 +98,9 @@ useEffect(()=>{
                                 value={formData.address}
                                 onChange={handleChange}
                             />
-                        </div>
                     </div>
+                    {errors.address && <p>{errors.address}</p>}
                     <div className="form-group">
-                        <div>
                             <label>City</label>
                             <input
                                 type='text'
@@ -100,10 +109,9 @@ useEffect(()=>{
                                 value={formData.city}
                                 onChange={handleChange}
                             />
-                        </div>
                     </div>
+                    {errors.city && <p>{errors.city}</p>}
                     <div className="form-group">
-                        <div>
                             <label>State</label>
                             <input
                                 type='text'
@@ -112,10 +120,9 @@ useEffect(()=>{
                                 value={formData.state}
                                 onChange={handleChange}
                             />
-                        </div>
                     </div>
+                    {errors.state && <p>{errors.state}</p>}
                     <div className="form-group">
-                        <div>
                             <label>Lat</label>
                             <input
                                 type='number'
@@ -124,10 +131,9 @@ useEffect(()=>{
                                 value={formData.lat}
                                 onChange={handleChange}
                             />
-                        </div>
                     </div>
+                    {errors.lat && <p>{errors.lat}</p>}
                     <div className="form-group">
-                        <div>
                             <label>Lng</label>
                             <input
                                 type='number'
@@ -136,8 +142,8 @@ useEffect(()=>{
                                 value={formData.lng}
                                 onChange={handleChange}
                             />
-                        </div>
                     </div>
+                    {errors.lng && <p>{errors.lng}</p>}
                     <hr />
                     <div className="form-group">
                         <h2>Describe your place to guests</h2>
@@ -151,6 +157,7 @@ useEffect(()=>{
                             placeholder="Please write at least 30 characters"
                         />
                     </div>
+                    {errors.description && <p>{errors.description}</p>}
                     <hr />
                     <div className="form-group">
                         <h2>Create a title for your spot</h2>
@@ -164,6 +171,7 @@ useEffect(()=>{
                             placeholder="Name of your spot"
                         />
                     </div>
+                    {errors.name && <p>{errors.name}</p>}
                 </form>
                 <hr />
                 <div className="form-group">
@@ -178,6 +186,7 @@ useEffect(()=>{
                         placeholder="Price per night (USD)"
                     />
                 </div>
+                {errors.price && <p>{errors.price}</p>}
                 <hr />
                 <div className="form-group">
                     <h2>Liven up your spot with photos</h2>
@@ -193,7 +202,7 @@ useEffect(()=>{
             </div>
            
             {!buttonText ? (
-                    <button type="submit">Submit</button>
+                    <button type="submit">Create Spot</button>
                 ):(
                     <button type="submit">{buttonText}</button>
                 )

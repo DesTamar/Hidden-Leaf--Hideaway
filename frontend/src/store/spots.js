@@ -5,6 +5,7 @@ const GET_SPOT = 'GET_SPOT'
 const CREATE_SPOT = 'CREATE_SPOT'
 const CURR_USER_SPOTS = 'CURR_USER_SPOTS'
 const UPDATE_SPOT = 'UPDATE_SPOT'
+const DELETE_SPOT = 'DELETE_SPOT'
 //actions
 export const fetchSpots = (spots) => (
     {
@@ -27,6 +28,10 @@ export const getCurrUserSpots = (spots) => ({
 export const editSpot = (spot) => ({
     type: UPDATE_SPOT,
     spot
+})
+export const deleteSpot = (spotId) => ({
+    type: DELETE_SPOT,
+    spotId
 })
 
 
@@ -54,14 +59,20 @@ export const getSpot = (spotId) => async (dispatch) => {
     }
 }
 export const createSpot = (spot) => async dispatch => {
+    const { address, city, state, country, lat, lng, name, description, price } = spot;
     const res = await csrfFetch(`/api/spots`, {
         method: 'POST',
         // headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(spot)
+        body: JSON.stringify({
+            address, city, state,
+            country, lat, lng, name,
+            description, price
+        })
     })
     if (res.ok) {
         const data = await res.json()
         dispatch(postSpot(data))
+        console.log(data)
         return data
     }
 }
@@ -111,22 +122,45 @@ export const updateSpot = (spot) => async dispatch => {
 }
 
 
+export const fetchDeleteSpot = (spotId) => async dispatch => {
+    const res = await csrfFetch(`/api/spots/${spotId}`, { method: 'DELETE' })
+
+
+    if (res.ok) {
+
+        dispatch(deleteSpot(spotId))
+        dispatch(getCurrUserSpots())
+    }
+}
+
+
 //reducer
 const initialState = {}
 
 const spotActions = (state = initialState, action) => {
     switch (action.type) {
-        case GET_ALL_SPOTS:
+        case GET_ALL_SPOTS: {
             const newState = { ...state, spots: action.spots }
             return newState
-        case GET_SPOT:
+        }
+        case GET_SPOT: {
             return { ...state, ...action.spot }
-        case CREATE_SPOT:
+        }
+        case CREATE_SPOT: {
             return { ...state, ...action.spot }
-        case CURR_USER_SPOTS:
+        }
+        case CURR_USER_SPOTS: {
             return { ...state, ...action.spots }
-        case UPDATE_SPOT:
+        }
+        case UPDATE_SPOT: {
             return { ...state, ...action.spot }
+        }
+        case DELETE_SPOT: {
+            const deleted = action.spotId;
+            const newState = { ...state, deleted }
+            delete newState.deleted
+            return newState
+        }
         default: return state
     }
 }

@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { postReview } from "../../store/reviews";
-
+import { useModal } from "../../context/Modal";
+import './Modal.css'
 const CreateReview = ({spotId}) => {
   const dispatch = useDispatch()
+const {closeModal} = useModal
+const [errors,setErrors] =useState({})
+
   const [formData, setFormData] = useState({
     review: '',
     stars: '',
@@ -20,17 +24,23 @@ const CreateReview = ({spotId}) => {
   }
   const handleSubmit = (e) => {
     e.preventDefault();
+    setErrors({})
   
     //dispatch post review thunk
     dispatch(postReview(spotId,formData))
-    
+    .then(closeModal)
+    .catch(async (res) => {
+      const data = await res.json();
+      if (data?.errors) setErrors(data.errors);
+    });
   }
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form className='modal' onSubmit={handleSubmit}>
         <div>
-          <h1>How was your stay?</h1>
+          <h2>How was your stay?</h2>
           <label htmlFor="review">Leave a review</label>
+          {errors.review && <p>{errors.review}</p>}
           <textarea
             id='review'
             name='review'
@@ -47,6 +57,7 @@ const CreateReview = ({spotId}) => {
             value={formData.stars}
             onChange={handleChange}
           >
+            {errors.stars && <p>{errors.stars}</p>}
             <option value='1'>1 stars</option>
             <option value='2'>2 stars</option>
             <option value='3'>3 stars</option>

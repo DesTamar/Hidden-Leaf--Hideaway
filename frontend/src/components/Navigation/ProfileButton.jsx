@@ -10,6 +10,7 @@ import './Button.css'
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
   const [showMenu, setShowMenu] = useState(false);
+  
   const ulRef = useRef();
 
   const toggleMenu = (e) => {
@@ -34,7 +35,12 @@ function ProfileButton({ user }) {
   const logout = (e) => {
     e.preventDefault();
     dispatch(sessionActions.logout());
+    setShowMenu(false)
   };
+
+  const Leave = () => {
+    setShowMenu(false)
+  }
 
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
 
@@ -50,7 +56,7 @@ function ProfileButton({ user }) {
             <li>{user.email}</li>
             <li>
               <Link to='/manage-spots'>
-              <button>Manage Spots</button>
+              <button onClick={Leave}>Manage Spots</button>
               </Link> 
             </li>
             <li>

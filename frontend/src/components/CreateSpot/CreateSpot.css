@@ -1,0 +1,12 @@
+.creation-form {
+    width: 33%;
+    margin-left: 33%;
+    flex-direction: column;
+    display: flex;
+}
+.creation-form .input {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    
+}

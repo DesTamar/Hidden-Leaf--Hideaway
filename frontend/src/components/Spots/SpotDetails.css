@@ -1,0 +1,102 @@
+.spot-detail {
+   
+    padding: 20px;
+}
+
+
+.spot-header {
+    margin-bottom: 20px;
+}
+
+.spot-header h1 {
+    font-size: 2em;
+    margin: 0;
+}
+.spot-header p {
+    font-size: 1.1em;
+    margin: 5px 0 0;
+}
+
+.image-container {
+    display: flex;
+}
+.main-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+.additional-images {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.additional-images img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.spot-info-container {
+   
+    display: flex;
+    justify-content: space-between;
+}
+.spot-info {
+    flex: 3;
+}
+.spot-info h2 {
+    
+    font-size: 1.1em;
+    margin: 0 0 10px ;
+   margin-bottom: 200px;
+}
+.spot-info .description {
+   
+   margin-left: 10px;
+    margin: 100px 10px 10px ;
+   
+    
+}
+.price-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,.1);
+}
+
+.pricing-rating {
+   
+    display:flex;
+    /* justify-content: space-between; */
+    width: 50%
+}
+
+.price {
+    font-size: 1em;
+}
+.rating {
+    font-size: 1em;
+    background-color: rgb(187, 230, 192);
+    border-radius: 10px;
+    padding: 5px 10px;
+}
+
+.reserve-button {
+    background-color: bisque;
+    color: black;
+    padding:  10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,.1);
+}
+.reserve-button:hover{
+    background-color: lightskyblue;
+}

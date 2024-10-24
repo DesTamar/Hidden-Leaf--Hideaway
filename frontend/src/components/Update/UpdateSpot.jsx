@@ -17,7 +17,7 @@ const UpdateSpot = () => {
   return (
    <CreateSpot
    initialData={spot}
-   title='Upadte your Spot'
+   title='Update your Spot'
    buttonText='Update'
    spotId={spotId}
    />
