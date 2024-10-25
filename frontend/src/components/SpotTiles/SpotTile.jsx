@@ -20,9 +20,15 @@ const SpotTile = ({ id, previewImage, city, state, rating, showManageButtons ,pr
         <img src={previewImage} alt="spot Image" />
         <div className='spot-info'>
           <p className='location'>{city} , {state}, </p>
+          { rating > 0 ?  (
+
           <p className='rating'><MdStarRate/>{rating}</p>
+          ) : (
+            <p><MdStarRate/> New</p>
+          )
+          }
         </div>
-        <div>
+        <div >
           <p>{price} /night</p>
         </div>
         </Link>
