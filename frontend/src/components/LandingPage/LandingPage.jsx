@@ -7,7 +7,7 @@ import '../SpotTiles/Spot.css'
 const LandingPage = () => {
   const dispatch = useDispatch()
   const spots = useSelector((state) => state.spots.spots || [])
-
+console.log(spots[0])
   
    useEffect(() => {
     

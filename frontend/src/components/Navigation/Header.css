@@ -1,7 +1,8 @@
 .header {
     display: flex;
     align-items: center;
-    background-color: rgba(237, 222, 222, 0.233);
+    background-color:  rgb(202, 208, 194);
+    border-radius: 5px;
     padding: 10px;
 }
 .header-nav{

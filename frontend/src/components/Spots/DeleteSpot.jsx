@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useModal } from "../../context/Modal"
 import { useDispatch } from "react-redux"
 import { fetchDeleteSpot } from "../../store/spots"
-import { fetchDeleteReview,fetchSpotReviews } from "../../store/reviews"
+import { fetchDeleteReview } from "../../store/reviews"
 const DeleteSpot = ({ deleteType,spotId,reviewId,onDelete,onDeleteSpot }) => {
   const dispatch = useDispatch()
 const {closeModal} = useModal()
@@ -22,7 +22,7 @@ const handleDeleteReview =  (e) => {
     e.preventDefault()
      dispatch(fetchDeleteSpot(spotId))
      .then(() => {onDeleteSpot(spotId)})
-     .then(closeModal)
+     .then(() => closeModal())
   }
 
 let pageType;

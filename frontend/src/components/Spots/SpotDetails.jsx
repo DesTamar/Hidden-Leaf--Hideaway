@@ -47,8 +47,8 @@ const SpotDetails = () => {
     setReviews(reviews?.filter((review) => review.id !== reviewId))
   }
 
-
-
+  const prevImage = spot?.SpotImages?.find(img => img.preview === true)
+  const additonalImages = spot?.SpotImages?.filter(image => image.preview === false)
 
   return (
     <>
@@ -64,11 +64,12 @@ const SpotDetails = () => {
               (
                 <div className="image-container">
                   <div className="main-image">
-                    <img src={spot.SpotImages[0]} />
+
+                    <img src={prevImage.url} />
                     <div className="additional-images">
                     </div>
-                    {spot.SpotImages.map((image, i) => (
-                      <img key={i} src={image} />
+                    {additonalImages.map((spot, i) => (
+                      <img key={i} src={spot.url} />
                     ))}
                   </div>
                 </div>
@@ -80,7 +81,7 @@ const SpotDetails = () => {
             <div className="spot-info-container">
               <div className="spot-info">
                 <h2>Hosted by {spot?.Owner?.firstName}{' '}{spot?.Owner?.lastName}</h2>
-                <p className="description">{spot.description}</p>
+                <p className="description">{spot?.description}</p>
               </div>
               <div className="price-box">
                 <div className="price-rating">

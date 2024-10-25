@@ -6,6 +6,7 @@ const CREATE_SPOT = 'CREATE_SPOT'
 const CURR_USER_SPOTS = 'CURR_USER_SPOTS'
 const UPDATE_SPOT = 'UPDATE_SPOT'
 const DELETE_SPOT = 'DELETE_SPOT'
+const CREATE_IMAGE = 'CREATE_IMAGE'
 //actions
 export const fetchSpots = (spots) => (
     {
@@ -33,6 +34,12 @@ export const deleteSpot = (spotId) => ({
     type: DELETE_SPOT,
     spotId
 })
+export const addImage = (image) => {
+    return{
+        type: CREATE_IMAGE,
+        image
+    }
+}
 
 
 //thunks 
@@ -72,7 +79,6 @@ export const createSpot = (spot) => async dispatch => {
     if (res.ok) {
         const data = await res.json()
         dispatch(postSpot(data))
-        console.log(data)
         return data
     }
 }
@@ -133,6 +139,19 @@ export const fetchDeleteSpot = (spotId) => async dispatch => {
     }
 }
 
+export const postSpotImage = (image) => async dispatch => {
+    const {spotId,url,preview} = image;
+    const res = await csrfFetch(`/api/spots/${spotId}/images`,{
+        method: `POST`,
+        body: JSON.stringify({spotId,url,preview})
+    })
+    if (res.ok){
+        const data = await res.json();
+        dispatch(addImage(data))
+        return res
+    }
+}
+
 
 //reducer
 const initialState = {}
@@ -150,7 +169,7 @@ const spotActions = (state = initialState, action) => {
             return { ...state, ...action.spot }
         }
         case CURR_USER_SPOTS: {
-            return { ...state, ...action.spots }
+            return { ...state, currUserSpots: action.spots }
         }
         case UPDATE_SPOT: {
             return { ...state, ...action.spot }
@@ -159,6 +178,10 @@ const spotActions = (state = initialState, action) => {
             const deleted = action.spotId;
             const newState = { ...state, deleted }
             delete newState.deleted
+            return newState
+        }
+        case CREATE_IMAGE: {
+            const newState = {...state, spotImage: action.image}
             return newState
         }
         default: return state
