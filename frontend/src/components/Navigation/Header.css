@@ -4,6 +4,7 @@
     background-color:  rgb(202, 208, 194);
     border-radius: 5px;
     padding: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 .header-nav{
     list-style-type: none;

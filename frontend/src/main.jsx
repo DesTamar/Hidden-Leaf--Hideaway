@@ -18,6 +18,7 @@ if (import.meta.env.MODE !== 'production') {
   window.store = store;
   window.sessionActions = sessionActions
   window.spotActions = spotActions
+  window.reviewReducer = reviewReducer
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(

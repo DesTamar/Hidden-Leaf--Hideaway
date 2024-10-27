@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { fetchSpot, getSpot } from "../../store/spots"
-import { Link, useParams } from "react-router-dom"
+import {  getSpot } from "../../store/spots"
+import {  useParams } from "react-router-dom"
 import { fetchSpotReviews } from "../../store/reviews"
 import Review from "../Reviews/Review"
 import CreateReview from "../Reviews/CreateReview"
@@ -39,9 +39,10 @@ const SpotDetails = () => {
 
   useEffect(() => {
     if (spotReviews) {
+      
       setReviews(spotReviews)
     }
-  }, [spotReviews])
+  },[spotReviews])
 
   const handleDeleteReview = (reviewId) => {
     setReviews(reviews?.filter((review) => review.id !== reviewId))
@@ -110,7 +111,7 @@ const SpotDetails = () => {
                   )
               }
 
-              {user && !(spotReviews?.some(review => review.userId === user?.id)) && !isOwner ? (
+              {user && !(reviews?.some(review => review.userId === user?.id)) && !isOwner ? (
                 <OpenModalButton
                   buttonText='Post a Review'
                   modalComponent={<CreateReview spotId={spotId} />}

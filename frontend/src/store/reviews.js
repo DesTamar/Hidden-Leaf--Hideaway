@@ -40,11 +40,16 @@ export const postReview = (spotId,newReview) => async dispatch => {
         method:'POST',
         body:JSON.stringify({review,stars})
     })
-    const data = await res.json()
-    dispatch(addReview(data))
-    dispatch(getSpotReviews(spotId))
-    dispatch(getSpot(spotId))
-    return data
+
+    if (res.ok){
+
+        const data = await res.json()
+        dispatch(addReview(data))
+        dispatch(getSpotReviews(spotId))
+        dispatch(getSpot(spotId))
+        return res
+
+    }
 }
 export const fetchDeleteReview = (reviewId,spotId) => async dispatch => {
     const res = await csrfFetch(`/api/reviews/${reviewId}`,{method:'DELETE'})
@@ -59,7 +64,8 @@ export const fetchDeleteReview = (reviewId,spotId) => async dispatch => {
 
 
 //reducer
-const reviewsReducer = (state = {}, action) => {
+const initialState = {}
+const reviewsReducer = (state = initialState, action) => {
     switch (action.type) {
         case GET_SPOT_REVIEWS:
             return { ...state, spotReviews: action.spotReviews }

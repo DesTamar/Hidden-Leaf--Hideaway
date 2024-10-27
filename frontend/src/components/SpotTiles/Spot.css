@@ -33,7 +33,9 @@
     display: flex;
     justify-content: space-between;
     padding: 10px;
-    background-color:rgb(208, 208, 209);
+    background-color:rgb(202, 208, 194);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2)
 }
 
 .location {

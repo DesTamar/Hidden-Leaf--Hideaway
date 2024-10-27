@@ -166,7 +166,8 @@ const spotActions = (state = initialState, action) => {
             return { ...state, ...action.spot }
         }
         case CREATE_SPOT: {
-            return { ...state, ...action.spot }
+            const newState =  { ...state, ...action.spot }
+            return newState;
         }
         case CURR_USER_SPOTS: {
             return { ...state, currUserSpots: action.spots }
